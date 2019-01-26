@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.with.bai.admin.dao.FundDao">
+
+    <sql id="content">
+        o.oid,
+        o.loan_money AS loanMoney,
+        o.start_time AS startTime,
+        o.end_time AS endTime,
+        o.state,
+        u.uid AS "user.uid",
+        u.name AS "user.name",
+        f.name AS "fund.name" ,
+        f.interest_rate AS "fund.interestRate" ,
+        f.power AS "fund.power"
+    </sql>
+
+    <sql id="join">
+    (wb_orders AS o LEFT JOIN wb_user AS u ON o.uid=u.uid) LEFT JOIN wb_fund AS f ON o.fid=f.fid
+    </sql>
+
+    <select id="selectByPage" resultType="Orders" parameterType="java.util.Map">
+        SELECT
+        <include refid="content"/>
+        FROM
+        <include refid="join"/>
+        <where>
+            <if test="fundName!=null and fundName!=''">
+                and f.name LIKE CONCAT('%',#{fundName},'%')
+            </if>
+            <if test="userName!=null and userName!=''">
+                and u.name LIKE CONCAT('%',#{userName},'%')
+            </if>
+            <if test="fundPower!=null and fundPower!=2">
+                and f.power=#{fundPower}
+            </if>
+            <if test="orders!=null">
+                <if test="orders.state!='' and orders.state!=null and orders.state!=2">
+                    and o.state=#{orders.state}
+                </if>
+            </if>
+                and o.fid is not null
+        </where>
+        LIMIT #{start},#{length}
+    </select>
+
+    <select id="getCount" resultType="java.lang.Integer">
+        SELECT
+        COUNT(*)
+        FROM
+        <include refid="join"/>
+        <where>
+            <if test="fund!=null">
+                <if test="fund.name!=null and fund.name!=''">
+                    and f.name LIKE CONCAT('%',#{fund.name},'%')
+                </if>
+            </if>
+            <if test="user!=null">
+                <if test="user.name!=null and user.name!=''">
+                    and u.name LIKE CONCAT('%',#{user.name},'%')
+                </if>
+            </if>
+            <if test="fund!=null">
+                <if test="fund.power!=null and fund.power!=2">
+                    and f.power=#{fund.power}
+                </if>
+            </if>
+            <if test="state!=''and state!=null and state!=2">
+                and o.state=#{state}
+            </if>
+            and o.fid is not null
+        </where>
+    </select>
+
+    <update id="approvemulti">
+        UPDATE
+        wb_orders
+        SET
+        state=1
+        WHERE
+        oid
+        IN
+        <foreach collection="array" item="oid" open="(" close=")" separator=",">
+            #{oid}
+        </foreach>
+    </update>
+
+    <select id="getInfo" resultType="Orders">
+        SELECT
+         o.oid,
+         o.loan_money AS loanMoney,
+         o.start_time AS startTime,
+         o.end_time AS endTime,
+         u.name AS "user.name",
+         u.email AS "user.email",
+         f.name AS "fund.name"
+         FROM
+         <include refid="join"/>
+         WHERE
+         oid IN
+        <foreach collection="array" separator="," open="(" close=")" item="oid">
+            #{oid}
+        </foreach>
+    </select>
+</mapper>

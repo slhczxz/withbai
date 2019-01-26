@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.with.bai.admin.dao.AdminDao">
+
+    <select id="selectByName" resultType="Admin">
+        SELECT
+        aid,
+	    name,
+	    email,
+	    password
+	    FROM
+	    wb_admin
+	    WHERE
+	    name=#{name}
+    </select>
+</mapper>

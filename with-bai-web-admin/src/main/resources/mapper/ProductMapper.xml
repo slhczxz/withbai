@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.with.bai.admin.dao.ProductDao">
+
+    <sql id="content">
+        fid,
+	    name,
+	    code,
+	    risklevel,
+	    state,
+	    opentradingdate,
+	    company,
+	    dateofestablishment,
+	    interest_rate,
+	    generalmanager,
+	    overallscope,
+	    totalassets,
+	    date_up_low AS dateUpLow,
+	    baseline,
+	    year_rate AS yearRate,
+	    invest_time AS investTime,
+	    remainingtime,
+	    unit_price AS unitPrice,
+	    positions,
+	    introduction,
+	    power
+    </sql>
+
+    <select id="selectByPage" resultType="Fund" parameterType="java.util.Map">
+        SELECT
+        <include refid="content"/>
+        FROM
+        wb_fund
+        <where>
+            <if test="fund.name!=null and fund.name!=''">
+                and name LIKE CONCAT('%',#{fund.name},'%')
+            </if>
+            <if test="fund.code!=null and fund.code!=''">
+                and code LIKE CONCAT('%',#{fund.code},'%')
+            </if>
+            <if test="fund.power!=2 and fund.power!=null">
+                and power=#{fund.power}
+            </if>
+        </where>
+        LIMIT #{start},#{length}
+    </select>
+
+    <select id="getCount" resultType="java.lang.Integer">
+        SELECT
+        COUNT(*)
+        FROM
+        wb_fund
+        <where>
+            <if test="name!=null and name!=''">
+                and name LIKE CONCAT('%',#{name},'%')
+            </if>
+            <if test="code!=null and code!=''">
+                and code LIKE CONCAT('%',#{code},'%')
+            </if>
+            <if test="power!=2 and power!=null">
+                and power=#{power}
+            </if>
+        </where>
+    </select>
+
+
+    <delete id="deleteById">
+        DELETE FROM
+        wb_fund
+        WHERE
+        fid=#{id}
+    </delete>
+
+    <delete id="deletemulti">
+        DELETE FROM
+        wb_fund
+        WHERE
+        fid IN
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectById" resultType="Fund">
+        SELECT
+        <include refid="content"/>
+        FROM
+        wb_fund
+        WHERE
+        fid=#{id}
+    </select>
+
+
+    <select id="checkup" resultType="Fund">
+        SELECT
+        <include refid="content"/>
+        FROM
+        wb_fund
+        WHERE
+        name=#{name}
+    </select>
+
+    <insert id="insertFund">
+        INSERT INTO
+        wb_fund(
+	    name,
+	    fullname,
+	    code,
+	    risklevel,
+	    state,
+	    opentradingdate,
+	    company,
+	    dateofestablishment,
+	    interest_rate,
+	    generalmanager,
+	    overallscope,
+	    totalassets,
+	    baseline,
+	    unit_price,
+	    introduction,
+	    power
+        )values(
+        #{name},
+	    #{fullname},
+	    #{code},
+	    #{risklevel},
+	    #{state},
+	    #{opentradingdate},
+	    #{company},
+	    #{dateofestablishment},
+	    #{interestRate},
+	    #{generalmanager},
+	    #{overallscope},
+	    #{totalassets},
+	    #{baseline},
+	    #{unitPrice},
+	    #{introduction},
+	    #{power}
+        )
+    </insert>
+
+    <update id="updateFund">
+        UPDATE
+        wb_fund
+        SET
+        name=#{name},
+	    fullname=#{fullname},
+	    code=#{code},
+	    risklevel=#{risklevel},
+	    state=#{state},
+	    opentradingdate=#{opentradingdate},
+	    company=#{company},
+	    dateofestablishment=#{dateofestablishment},
+	    interest_rate=#{interestRate},
+	    generalmanager=#{generalmanager},
+	    overallscope=#{overallscope},
+	    totalassets=#{totalassets},
+	    baseline=#{baseline},
+	    unit_price=#{unitPrice},
+	    introduction=#{introduction},
+	    power=#{power}
+	    WHERE
+	    fid=#{fid}
+    </update>
+
+
+    <insert id="insertLoan">
+        INSERT INTO
+        wb_fund(
+	    name,
+	    invest_time,
+	    state,
+	    year_rate,
+	    remainingtime,
+	    overallscope,
+	    totalassets,
+	    baseline,
+	    unit_price,
+	    introduction,
+	    power
+        )values(
+        #{name},
+	    #{investTime},
+	    #{state},
+	    #{yearRate},
+	    #{remainingtime},
+	    #{overallscope},
+	    #{totalassets},
+	    #{baseline},
+	    #{unitPrice},
+	    #{introduction},
+	    #{power}
+        )
+    </insert>
+
+    <update id="updateLoan">
+        UPDATE
+        wb_fund
+        SET
+        name=#{name},
+	    invest_time=#{investTime},
+	    state=#{state},
+	    year_rate=#{yearRate},
+	    remainingtime=#{remainingtime},
+	    overallscope=#{overallscope},
+	    totalassets=#{totalassets},
+	    baseline=#{baseline},
+	    unit_price=#{unitPrice},
+	    introduction=#{introduction},
+	    power=#{power}
+	    WHERE
+	    fid=#{fid}
+    </update>
+</mapper>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+      namespace；隔离sql语句
+-->
+<mapper namespace="com.with.bai.dao.PersonCenterDao">
+    <select id="selectUserByUid" resultType="User">
+        SELECT
+         uid,
+         email,
+         name,
+         password,
+         ID_Number as IDNumber,
+         phone,
+         sex,
+         job
+         FROM
+         wb_user
+         WHERE
+         uid=#{uid}
+    </select>
+    <select id="selectBankByUid" resultType="Bank">
+        SELECT
+        name,
+        card_number AS cardNumber,
+        uid
+        FROM
+        wb_bank
+        WHERE
+        uid=#{uid}
+    </select>
+    <insert id="insertCard" >
+         INSERT INTO wb_bank(
+         name,
+         card_number,
+         uid
+         )
+         VALUES
+          (
+            #{name},
+            #{cardNumber},
+            #{uid}
+         )
+    </insert>
+    <select id="selectLoanByUid" resultType="Orders">
+        SELECT
+          loan_money AS loanMoney,
+          start_time AS startTime,
+          end_time AS endTime,
+          state
+          FROM
+          wb_orders
+          WHERE
+          uid=#{uid}
+    </select>
+
+
+
+    <select id="selectFund" resultType="Fund">
+      SELECT
+        fid,
+        name,
+        fullname,
+        code,
+        risklevel,
+        state
+        opentradingdate,
+        company,
+        dateofestablishment,
+        interest_rate as interestRate,
+        generalmanager,
+        overallscope,
+        totalassets,
+        date_up_low as dateUpLow,
+        baseline,
+        year_rate AS yearRate,
+        invest_time AS investTime,
+        remainingtime,
+        unit_price AS unitPrice,
+        positions,
+        introduction,
+        power
+       FROM
+       wb_fund
+        WHERE
+        fid
+         IN (SELECT fid FROM wb_orders WHERE uid=#{uid})
+    </select>
+    <update id="updateUser">
+        UPDATE
+        wb_user
+        SET
+        name=#{name},
+        ID_Number=#{IDNumber},
+        phone=#{phone},
+        record=#{record},
+        assets=#{assets},
+        employment=#{employment}
+        WHERE
+        uid=#{uid}
+    </update>
+
+
+    <select id="getCounts" resultType="java.lang.Integer">
+        select COUNT(*) FROM wb_user
+    </select>
+
+
+
+</mapper>

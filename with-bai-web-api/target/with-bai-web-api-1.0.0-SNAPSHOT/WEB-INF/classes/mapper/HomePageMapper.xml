@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+      namespace；隔离sql语句
+-->
+<mapper namespace="com.with.bai.dao.HomePageMapper">
+
+    <select id="getTotalLoan" resultType="Orders">
+
+        select
+        oid,
+        loan_money as loanMoney,
+        start_time as atartTime,
+        state,
+        uid,
+        lid,
+        fid
+        from wb_orders
+
+    </select>
+    <select id="getFirstLoan" resultType="Orders">
+
+        select
+        oid,
+        loan_money as loanMoney,
+        start_time as startTime,
+        state,
+        uid,
+        lid,
+        fid
+        from wb_orders
+        LIMIT 0,1
+
+    </select>
+
+</mapper>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.with.bai.admin.dao.LoanDao">
+
+    <sql id="content">
+       	o.oid,
+	    o.loan_money AS loanMoney,
+	    o.start_time AS startTime,
+	    o.end_time AS endTime,
+	    o.state,
+	    u.uid AS "user.uid",
+	    u.name AS "user.name",
+	    l.name AS "loan.name" ,
+	    l.amount AS "loan.amount" ,
+	    ltvratio AS "loan.ltvRatio"
+    </sql>
+
+    <sql id="join">
+    (wb_orders AS o LEFT JOIN wb_user AS u ON o.uid=u.uid) LEFT JOIN wb_loan AS l ON o.lid=l.lid
+    </sql>
+
+    <select id="selectByPage" resultType="Orders" parameterType="java.util.Map">
+        SELECT
+        <include refid="content"/>
+        FROM
+        <include refid="join"/>
+        <where>
+            <if test="loanName!=null and loanName!=''">
+                and l.name LIKE CONCAT('%',#{loanName},'%')
+            </if>
+            <if test="userName!=null and userName!=''">
+                and u.name LIKE CONCAT('%',#{userName},'%')
+            </if>
+            <if test="orders!=null">
+                <if test="orders.state!='' and orders.state!=null and orders.state!=2">
+                    and o.state=#{orders.state}
+                </if>
+            </if>
+            and o.lid is not null
+        </where>
+        LIMIT #{start},#{length}
+    </select>
+
+    <select id="getCount" resultType="java.lang.Integer">
+        SELECT
+        COUNT(*)
+        FROM
+        <include refid="join"/>
+        <where>
+            <if test="loan!=null">
+                <if test="loan.name!=null and loan.name!=''">
+                    and l.name LIKE CONCAT('%',#{loan.name},'%')
+                </if>
+            </if>
+            <if test="user!=null">
+                <if test="user.name!=null and user.name!=''">
+                    and u.name LIKE CONCAT('%',#{user.name},'%')
+                </if>
+            </if>
+            <if test="state!=''and state!=null and state!=2">
+                and o.state=#{state}
+            </if>
+            and o.lid is not null
+        </where>
+    </select>
+
+    <update id="approvemulti">
+        UPDATE
+        wb_orders
+        SET
+        state=1
+        WHERE
+        oid
+        IN
+        <foreach collection="array" item="oid" open="(" close=")" separator=",">
+            #{oid}
+        </foreach>
+    </update>
+
+</mapper>

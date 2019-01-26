@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+      namespace；隔离sql语句
+-->
+<mapper namespace="com.with.bai.dao.ExpertPageMapper">
+
+    <select id="getExpert" resultType="Expert">
+        select
+            eid,
+            name,
+            image,
+            detail
+        from wb_expert
+
+
+    </select>
+
+   <!-- <select id="getInformationById" resultType="Information">
+         select
+        iid,
+        title,
+        author,
+        time,
+        image,
+        content
+        from wb_information
+        where iid=#{iid}
+
+    </select>-->
+
+
+</mapper>

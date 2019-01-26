@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.with.bai.admin.dao.UserDao">
+
+    <sql id="content">
+       uid,
+	   email,
+	   name,
+	   password,
+	   ID_number AS IDNumber,
+	   phone,
+	   sex,
+	   job,
+	   created,
+	   updated
+    </sql>
+
+    <select id="selectByPage" resultType="User" parameterType="java.util.Map">
+        SELECT
+        <include refid="content"/>
+        FROM
+        wb_user
+        <where>
+            <if test="user.name!=null and user.name!=''">
+                and name LIKE CONCAT('%',#{user.name},'%')
+            </if>
+            <if test="user.email!=null and user.email!=''">
+                and email LIKE CONCAT('%',#{user.email},'%')
+            </if>
+            <if test="user.phone!=null and user.phone!=''">
+                and phone LIKE CONCAT('%',#{user.phone},'%')
+            </if>
+        </where>
+        LIMIT #{start},#{length}
+    </select>
+
+    <select id="getCount" resultType="java.lang.Integer" >
+        SELECT
+        COUNT(*)
+        FROM
+        wb_user
+        <where>
+            <if test="name!=null and name!=''">
+                and name LIKE CONCAT('%',#{name},'%')
+            </if>
+            <if test="email!=null and email!=''">
+                and email LIKE CONCAT('%',#{email},'%')
+            </if>
+            <if test="phone!=null and phone!=''">
+                and phone LIKE CONCAT('%',#{phone},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="checkup" resultType="java.lang.Integer" >
+        SELECT
+        COUNT(*)
+        FROM
+        wb_user
+        WHERE
+	    email=#{email}
+	    OR
+	    NAME=#{name}
+	    OR
+	    ID_number=#{IDNumber}
+	    OR
+	    phone=#{phone}
+    </select>
+
+    <insert id="insert">
+        INSERT INTO
+        wb_user(
+	      email,
+	      name,
+	      password,
+	      ID_number,
+	      phone,
+	      sex,
+	      job,
+	      created,
+	      updated
+        )values(
+          #{email},
+	      #{name},
+	      #{password},
+	      #{IDNumber},
+	      #{phone},
+	      #{sex},
+	      #{job},
+	      #{created},
+	      #{updated}
+        )
+    </insert>
+
+    <select id="selectById" resultType="User">
+        select
+        <include refid="content"/>
+        FROM
+        wb_user
+        WHERE
+        uid=#{uid}
+    </select>
+
+    <update id="update" >
+        UPDATE
+        wb_user
+        SET
+        email=#{email},
+	    name=#{name},
+	    ID_number=#{IDNumber},
+	    phone=#{phone}
+    </update>
+
+    <delete id="deleteById">
+      DELETE
+      FROM
+      wb_user
+      WHERE
+      uid=#{uid}
+    </delete>
+
+    <delete id="deletemulti">
+        DELETE
+        FROM
+        wb_user
+        WHERE
+        uid IN
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

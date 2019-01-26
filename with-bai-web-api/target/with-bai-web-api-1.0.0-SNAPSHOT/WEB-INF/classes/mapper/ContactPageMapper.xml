@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+      namespace；隔离sql语句
+-->
+<mapper namespace="com.with.bai.dao.ContactPageMapper">
+
+    <insert id="insertOpinion">
+        insert into wb_opinion(
+        uname,
+        uemail,
+        details
+        )
+        values (
+        #{uname},
+        #{uemail},
+        #{details}
+        )
+
+
+    </insert>
+
+
+</mapper>
